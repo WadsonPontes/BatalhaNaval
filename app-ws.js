@@ -1,9 +1,44 @@
+const Partida = require('./model/partida.js');
+const Jogador = require('./model/jogador.js');
 const WebSocket = require('ws');
 
-let clients = [];
- 
-function onError(ws, err) {
-    console.error(`onError: ${err.message}`);
+let partidas = [];
+let esperando = null;
+
+function onConnection(ws, req) {
+    if (!esperando) {
+        esperando = new Jogador(ws, partidas.length);
+
+        ws.send(JSON.stringify({
+            type: 'connection',
+            data: 'espere'
+        }));
+    }
+    else {
+        let jogador2 = new Jogador(ws, partidas.length);
+        let partida = new Partida(partidas.length, esperando, jogador2);
+
+        esperando.ws.send(JSON.stringify({
+            type: 'connection',
+            data: partidas.length
+        }));
+
+        jogador2.ws.send(JSON.stringify({
+            type: 'connection',
+            data: partidas.length
+        }));
+
+        partidas.push(partida);
+
+        esperando = null;
+    }
+
+
+    ws.on('message', data => onMessage(ws, data));
+    ws.on('error', error => onError(ws, error));
+    ws.on('close', (reasonCode, description) => onClose(ws, reasonCode, description));
+
+    console.log(`Jogador conectou!`);
 }
  
 function onMessage(ws, data) {
@@ -13,36 +48,37 @@ function onMessage(ws, data) {
         type: 'confirmation',
         data: 'Recebido'
     }));
-    console.log('streaming to', clients.length, 'clients');
-    
-    for (const client of clients) {
-        console.log('envio?', data.toString());
-        client.send(JSON.stringify({
-            type: 'broadcast',
-            username: json.username,
-            message: json.message
-        }));
-    }
+    console.log('streaming to', partidas.length, 'partidas');
+
+    partidas[json.id_partida].jogador1.ws.send(JSON.stringify({
+        type: 'broadcast',
+        username: json.username,
+        message: json.message
+    }));
+
+    partidas[json.id_partida].jogador2.ws.send(JSON.stringify({
+        type: 'broadcast',
+        username: json.username,
+        message: json.message
+    }));
+}
+
+function onError(ws, err) {
+    console.error(`onError: ${err.message}`);
 }
 
 function onClose(ws, reasonCode, description) {
     console.log(`onClose: ${reasonCode} - ${description}`);
-    const index = clients.indexOf(ws);
+    const index = partidas.indexOf(ws);
     if (index > -1) {
-        clients.splice(index, 1);
+        partidas.splice(index, 1);
     }
-}
- 
-function onConnection(ws, req) {
-    clients.push(ws);
-    ws.on('message', data => onMessage(ws, data));
-    ws.on('error', error => onError(ws, error));
-    ws.on('close', (reasonCode, description) => onClose(ws, reasonCode, description));
-    ws.send(JSON.stringify({
-        type: 'connection',
-        data: 'Bem vindo'
-    }))
-    console.log(`onConnection`);
+
+    if (reasonCode == 1001) {
+        console.log("Jogador saiu!");
+    }
+
+    esperando = null;
 }
  
 module.exports = (server) => {
@@ -52,6 +88,6 @@ module.exports = (server) => {
  
     wss.on('connection', onConnection);
  
-    console.log(`App Web Socket Server is running!`);
+    console.log(`Servidor WebSocket online!`);
     return wss;
 }

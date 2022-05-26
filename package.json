@@ -1,10 +1,9 @@
 {
-  "name": "ws",
-  "version": "1.0.0",
-  "description": "",
+  "name": "Batalha Naval",
+  "version": "0.0.1",
+  "description": "Batalha Naval por Wadson Pontes em Pedro Garcia",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node -r dotenv/config index"
   },
   "keywords": [],

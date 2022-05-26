@@ -2,12 +2,17 @@ const ws = new WebSocket("ws://" + location.host);
 let msg;
 let chat;
 let username; // nome do usuário
+let id_partida;
 
 ws.onmessage = (event) => {        
     console.log(event.data);
     const json = JSON.parse(event.data);
     console.log('json', json);
-    if (json.type == 'broadcast') {
+
+    if (json.type == 'connection') {
+        id_partida = json.data;
+    }
+    else if (json.type == 'broadcast') {
         // cria a mensagem na tela.
         const divMensagemLinha = document.createElement("DIV");
         const divMensagemNomePessoa = document.createElement("DIV");
@@ -52,7 +57,8 @@ function send() {
     ws.send(JSON.stringify({
         type: 'message', 
         username: username.value,
-        message: msg.value
+        message: msg.value,
+        id_partida: id_partida
     }));
 
     // Limpa o campo de texto da mensagem
