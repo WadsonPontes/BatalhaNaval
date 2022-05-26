@@ -19,12 +19,12 @@ function onConnection(ws, req) {
         let partida = new Partida(partidas.length, esperando, jogador2);
 
         esperando.ws.send(JSON.stringify({
-            type: 'connection',
+            type: 'start',
             data: partidas.length
         }));
 
         jogador2.ws.send(JSON.stringify({
-            type: 'connection',
+            type: 'start',
             data: partidas.length
         }));
 

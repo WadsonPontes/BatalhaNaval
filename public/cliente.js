@@ -1,6 +1,7 @@
 const ws = new WebSocket("ws://" + location.host);
 let msg;
 let chat;
+let msg_espera;
 let username; // nome do usuário
 let id_partida;
 
@@ -10,6 +11,10 @@ ws.onmessage = (event) => {
     console.log('json', json);
 
     if (json.type == 'connection') {
+        msg_espera.innerHTML = "Esperando oponente!";
+    }
+    else if (json.type == 'start') {
+        msg_espera.innerHTML = "";
         id_partida = json.data;
     }
     else if (json.type == 'broadcast') {
@@ -79,5 +84,6 @@ window.addEventListener('load', (e) => {
     username = document.getElementById('username');
     msg = document.getElementById('message');
     chat = document.getElementById('chat');
+    msg_espera = document.getElementById('msg_espera');
 });
 
