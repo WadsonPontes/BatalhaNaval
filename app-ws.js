@@ -1,13 +1,15 @@
 const Partida = require('./model/partida.js');
 const Jogador = require('./model/jogador.js');
 const WebSocket = require('ws');
+const uuid = require('uuid');
 
-let partidas = [];
+let partidas = {};
 let esperando = null;
 
 function onConnection(ws, req) {
     if (!esperando) {
-        esperando = new Jogador(ws, partidas.length);
+        let id_jogador1 = uuid.v4();
+        esperando = new Jogador(ws, null, id_jogador1);
 
         ws.send(JSON.stringify({
             type: 'connection',
@@ -15,17 +17,20 @@ function onConnection(ws, req) {
         }));
     }
     else {
-        let jogador2 = new Jogador(ws, partidas.length);
-        let partida = new Partida(partidas.length, esperando, jogador2);
+        let id_partida = uuid.v4();
+        let id_jogador2 = uuid.v4();
+        let jogador2 = new Jogador(ws, id_partida, id_jogador2);
+        let partida = new Partida(id_partida, esperando, jogador2);
+        partida.jogador1.id_partida = id_partida;
 
         esperando.ws.send(JSON.stringify({
             type: 'start',
-            data: partidas.length
+            data: id_partida
         }));
 
         jogador2.ws.send(JSON.stringify({
             type: 'start',
-            data: partidas.length
+            data: id_partida
         }));
 
         partidas.push(partida);
@@ -48,7 +53,11 @@ function onMessage(ws, data) {
         type: 'confirmation',
         data: 'Recebido'
     }));
-    console.log('streaming to', partidas.length, 'partidas');
+
+    if (partidas[data.partida_id] !== null) {
+        // confiar no cidadão.
+        //
+    }
 
     partidas[json.id_partida].jogador1.ws.send(JSON.stringify({
         type: 'broadcast',
