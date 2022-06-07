@@ -33,7 +33,7 @@ function onConnection(ws, req) {
             data: id_partida
         }));
 
-        partidas.push(partida);
+        partidas[id_partida] = partida;
 
         esperando = null;
     }
