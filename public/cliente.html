@@ -1,60 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
-    <title>WS Client</title>
-
-    <!-- Estilos para os elementos do HTML -->
-    <style>
-        .mensagem-usuario {
-            border: 2px solid darkcyan;
-            border-radius: 0.5em;
-            background-color: lightgreen;
-            margin-bottom: 10px;
-            padding: 3px;
-            float: right;
-            clear: both;
-        }
-        .mensagem-outro {
-            border: 2px solid lightgray;
-            border-radius: 0.5em;
-            background-color: azure;
-            margin-bottom: 10px;
-            padding: 3px;
-            float: left;
-            clear: both;
-        }
-
-        #chat {
-            clear: both;
-        }
-
-        .nome-pessoa {
-            font-weight: bold;   
-        }
+    <title>Batalha Naval</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
     </style>
-
-    <script src="/cliente.js">
-        
-        
-    </script>
 </head>
 <body>
-    <div id="msg_espera">
-        
-    </div>
-    <div id="chat">
-        
-    </div>
-    <div id="actions" style="clear: both;">
-        Seu nome: <input type="text" id="username" style="width: 10em" /> <br/>
-        Mensagem: <input type="text" id="message" onkeydown="pressionouTecla(event)" style="width: 20em"/>
-        <button onClick="send()" >
-            Enviar
-        </button>
-    </div>
+    <header>
+        <h1>Batalha Naval</h1>
+    </header>
+    <main>
+        <article>
+            <section id="pagina-inicial">
+                <label for="nome">Nome do Jogador</label>
+                <input id="campo-nome" type="text" name="nome">
+                <button onclick="entrar()">Entrar</button>
+            </section>
+            <section id="saguao" class="desligado"></section>
+            <section id="montagem" class="desligado"></section>
+            <section id="jogo" class="desligado"></section>
+            <section id="fim-de-jogo" class="desligado"></section>
+        </article>
+    </main>
+    <footer>
+        Todos os direitos reservados
+    </footer>
+    <script src="/cliente.js"></script>
 </body>
 </html>

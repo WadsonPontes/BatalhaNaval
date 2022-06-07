@@ -1,0 +1,28 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+article{
+	display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+}
+label,input,button{
+	display: block;
+	text-align: center;
+}
+footer{
+	position: fixed;
+    bottom: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.desligado{
+	display: none;
+}

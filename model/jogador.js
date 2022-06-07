@@ -1,6 +1,7 @@
 class Jogador {
 	tabuleiro;
 	tiros;
+	nome;
 
 	constructor(ws, id_partida, id_jogador) {
 		this.ws = ws;
@@ -22,6 +23,15 @@ class Jogador {
 				this.tiros[i][j] = 0;
 			}
 		}
+	}
+
+	get() {
+		return {
+			id_partida: this.id_partida,
+			id_jogador: this.id_jogador,
+			tabuleiro: this.tabuleiro,
+			tiros: this.tiros
+		};
 	}
 }
 
