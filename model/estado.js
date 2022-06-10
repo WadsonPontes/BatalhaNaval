@@ -1,9 +1,15 @@
-const ESTADO = Object.freeze({
-    POSICIONAMENTO: 1,
-    PARTIDA: 2,
-    ENCERRADA: 3,
-    JOGANDO: 4,
-    SAIU: 5
+const Estado = Object.freeze({
+    INICIAL: 1,
+    SAGUAO: 2,
+    PREPARACAO: 3,
+    JOGO: 4,
+    RESULTADO: 5,
+    ATACANDO: 6,
+    DEFENDENDO: 7,
+    DESCONECTADO: 8,
+    DESISTENTE: 9,
+    DERROTADO: 10,
+    VENCEDOR: 11
 });
 
-module.exports = ESTADO;
+module.exports = Estado;

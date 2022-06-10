@@ -84,9 +84,12 @@ function entrar() {
 }
 
 function main() {
-    e.tela = document.querySelector('article');
-    e.pagina_inicial = document.querySelector('#pagina_inicial');
-    e.pagina_sala = document.querySelector('#sala');
+    e.tela_inicial = document.querySelector('#tela-inicial');
+    e.tela_saguao = document.querySelector('#tela-saguao');
+    e.tela_preparacao = document.querySelector('#tela-preparacao');
+    e.tela_jogo = document.querySelector('#tela-jogo');
+    e.tela_resultado = document.querySelector('#tela-resultado');
+
     e.campo_nome = document.querySelector('#campo-nome');
 }
 
