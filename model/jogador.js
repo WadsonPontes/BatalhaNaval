@@ -1,6 +1,7 @@
 class Jogador {
 	tabuleiro;
 	tiros;
+	nome;
 
 	constructor(ws, id_partida, id_jogador, estado) {
 		this.ws = ws;

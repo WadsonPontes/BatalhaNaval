@@ -1,92 +1,93 @@
 const ws = new WebSocket("ws://" + location.host);
-let msg;
-let chat;
-let msg_espera;
-let username; // nome do usuário
-let dados;
+let e = {}; // Elementos
+// let jogador;
 
-ws.onmessage = (event) => {        
-    console.log(event.data);
-    const json = JSON.parse(event.data);
-    console.log('json', json);
+// ws.onmessage = (event) => {
+//     const dados = JSON.parse(event.data);
 
-    if (json.type == 'connection') {
-        msg_espera.innerHTML = "Esperando oponente!";
-    }
-    else if (json.type == 'start') {
-        msg_espera.innerHTML = "";
-        dados = json.data;
-    }
-    else if (json.type == 'broadcast') {
-        // cria a mensagem na tela.
-        const divMensagemLinha = document.createElement("DIV");
-        const divMensagemNomePessoa = document.createElement("DIV");
-        const divMensagemConteudo = document.createElement("DIV");
+//     if (dados.type == 'connection') {
+//         msg_espera.innerHTML = "Esperando oponente!";
+//     }
+//     else if (dados.type == 'start') {
+//         msg_espera.innerHTML = "";
+//         jogador = dados.jogador;
+//     }
+//     else if (dados.type == 'broadcast') {
+//         // cria a mensagem na tela.
+//         const divMensagemLinha = document.createElement("DIV");
+//         const divMensagemNomePessoa = document.createElement("DIV");
+//         const divMensagemConteudo = document.createElement("DIV");
         
-        divMensagemNomePessoa.className = "nome-pessoa";
+//         divMensagemNomePessoa.className = "nome-pessoa";
         
-        if (json.username == username.value) {
-            divMensagemLinha.className = "mensagem-usuario";
-            divMensagemNomePessoa.innerHTML = "Você: ";
-        } else {
-            divMensagemLinha.className = "mensagem-outro";
-            divMensagemNomePessoa.innerHTML = `${json.username}: `;
-        } 
+//         if (dados.username == username.value) {
+//             divMensagemLinha.className = "mensagem-usuario";
+//             divMensagemNomePessoa.innerHTML = "Você: ";
+//         } else {
+//             divMensagemLinha.className = "mensagem-outro";
+//             divMensagemNomePessoa.innerHTML = `${dados.username}: `;
+//         } 
 
-        divMensagemConteudo.innerHTML = json.message;
+//         divMensagemConteudo.innerHTML = dados.message;
 
-        divMensagemLinha.appendChild(divMensagemNomePessoa);
-        divMensagemLinha.appendChild(divMensagemConteudo);
+//         divMensagemLinha.appendChild(divMensagemNomePessoa);
+//         divMensagemLinha.appendChild(divMensagemConteudo);
         
-        chat.appendChild(divMensagemLinha);        
-    }
-    else if (json.type == 'encerrado') {
-        msg_espera.innerHTML = "Partida Encerrada, adversário saiu!";
-    }
-}
+//         chat.appendChild(divMensagemLinha);        
+//     }
+//     else if (json.type == 'encerrado') {
+//         msg_espera.innerHTML = "Partida Encerrada, adversário saiu!";
+//     }
+// }
 
-// Função para enviar mensagem que é executada quando se clica no botão
-function send() {
-    // verifica se o campo de texto da mensagem está vazio
-    if (username.value == "") {
+// function send() {
+//     if (username.value == "") {
+//         alert("Por favor, digite um nome de usuário!");
+//         username.focus();
+//         return;
+//     }
+
+//     if (msg.value == "") {
+//         alert("Por favor, digite uma mensagem!");
+//         msg.focus();
+//         return;
+//     }
+
+//     ws.send(JSON.stringify({
+//         type: 'message', 
+//         username: username.value,
+//         message: msg.value,
+//         id_partida: id_partida
+//     }));
+
+//     msg.value = '';
+//     msg.focus();
+// }
+
+// function pressionouTecla(event) {
+//     if (event.keyCode == 13) {
+//         send();
+//     }
+// }
+
+function entrar() {
+    if (e.campo_nome.value == "") {
         alert("Por favor, digite um nome de usuário!");
-        username.focus();
+        e.campo_nome.focus();
         return;
     }
 
-    // verifica se a mensagem está vazia
-    if (msg.value == "") {
-        alert("Por favor, digite uma mensagem!");
-        msg.focus();
-        return;
-    }
-
-    // Envia o texto digitado para o servidor pelo WebSocket (Um objeto convertido para string)
     ws.send(JSON.stringify({
-        type: 'message', 
-        username: username.value,
-        message: msg.value,
-        dados: dados
+        tipo: 'entrar', 
+        nome: e.campo_nome.value
     }));
-
-    // Limpa o campo de texto da mensagem
-    msg.value = '';
-    // foca no campo de texto da mensagem para digitar a próxima
-    msg.focus();
 }
 
-// Função para enviar mensagem que é executada quando se aperta Enter no campo de texto da mensagem
-function pressionouTecla(event) {
-    if (event.keyCode == 13) { // 13 é o código para a tecla Enter
-        send(); // Envia a mensagem
-    }
+function main() {
+    e.tela = document.querySelector('article');
+    e.pagina_inicial = document.querySelector('#pagina_inicial');
+    e.pagina_sala = document.querySelector('#sala');
+    e.campo_nome = document.querySelector('#campo-nome');
 }
 
-window.addEventListener('load', (e) => {
-    console.log('load')
-    username = document.getElementById('username');
-    msg = document.getElementById('message');
-    chat = document.getElementById('chat');
-    msg_espera = document.getElementById('msg_espera');
-});
-
+main();

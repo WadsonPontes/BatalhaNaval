@@ -4,6 +4,7 @@ const Jogador = require('./model/jogador.js');
 const WebSocket = require('ws');
 const uuid = require('uuid');
 
+let saguao = {};
 let partidas = {};
 let esperando = null;
 
@@ -26,12 +27,12 @@ function onConnection(ws, req) {
 
         esperando.ws.send(JSON.stringify({
             type: 'start',
-            data: esperando.get()
+            jogador: esperando.get()
         }));
 
         jogador2.ws.send(JSON.stringify({
             type: 'start',
-            data: jogador2.get()
+            jogador: jogador2.get()
         }));
 
         partidas[id_partida] = partida;
