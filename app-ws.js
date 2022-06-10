@@ -34,7 +34,7 @@ function onConnection(ws, req) {
             data: jogador2.get()
         }));
 
-        partidas[partida.id_partida] = partida;
+        partidas[id_partida] = partida;
 
         esperando = null;
     }
