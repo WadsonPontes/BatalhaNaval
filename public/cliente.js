@@ -3,7 +3,7 @@ let msg;
 let chat;
 let msg_espera;
 let username; // nome do usuário
-let id_partida;
+let dados;
 
 ws.onmessage = (event) => {        
     console.log(event.data);
@@ -15,7 +15,7 @@ ws.onmessage = (event) => {
     }
     else if (json.type == 'start') {
         msg_espera.innerHTML = "";
-        id_partida = json.data;
+        dados = json.data;
     }
     else if (json.type == 'broadcast') {
         // cria a mensagem na tela.
@@ -40,6 +40,9 @@ ws.onmessage = (event) => {
         
         chat.appendChild(divMensagemLinha);        
     }
+    else if (json.type == 'encerrado') {
+        msg_espera.innerHTML = "Partida Encerrada, adversário saiu!";
+    }
 }
 
 // Função para enviar mensagem que é executada quando se clica no botão
@@ -63,7 +66,7 @@ function send() {
         type: 'message', 
         username: username.value,
         message: msg.value,
-        id_partida: id_partida
+        dados: dados
     }));
 
     // Limpa o campo de texto da mensagem

@@ -2,10 +2,11 @@ class Jogador {
 	tabuleiro;
 	tiros;
 
-	constructor(ws, id_partida, id_jogador) {
+	constructor(ws, id_partida, id_jogador, estado) {
 		this.ws = ws;
 		this.id_partida = id_partida;
 		this.id_jogador = id_jogador;
+		this.estado = estado;
 		this.init();
 	}
 
@@ -22,6 +23,15 @@ class Jogador {
 				this.tiros[i][j] = 0;
 			}
 		}
+	}
+
+	get() {
+		return {
+			id_partida: this.id_partida,
+			id_jogador: this.id_jogador,
+			tabuleiro: this.tabuleiro,
+			tiros: this.tiros
+		};
 	}
 }
 

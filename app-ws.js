@@ -1,3 +1,4 @@
+const ESTADO = require('./model/estado.js');
 const Partida = require('./model/partida.js');
 const Jogador = require('./model/jogador.js');
 const WebSocket = require('ws');
@@ -9,7 +10,7 @@ let esperando = null;
 function onConnection(ws, req) {
     if (!esperando) {
         let id_jogador1 = uuid.v4();
-        esperando = new Jogador(ws, null, id_jogador1);
+        esperando = new Jogador(ws, null, id_jogador1, ESTADO.JOGANDO);
 
         ws.send(JSON.stringify({
             type: 'connection',
@@ -19,25 +20,24 @@ function onConnection(ws, req) {
     else {
         let id_partida = uuid.v4();
         let id_jogador2 = uuid.v4();
-        let jogador2 = new Jogador(ws, id_partida, id_jogador2);
-        let partida = new Partida(id_partida, esperando, jogador2);
+        let jogador2 = new Jogador(ws, id_partida, id_jogador2, ESTADO.JOGANDO);
+        let partida = new Partida(id_partida, esperando, jogador2, ESTADO.POSICIONAMENTO);
         partida.jogador1.id_partida = id_partida;
 
         esperando.ws.send(JSON.stringify({
             type: 'start',
-            data: id_partida
+            data: esperando.get()
         }));
 
         jogador2.ws.send(JSON.stringify({
             type: 'start',
-            data: id_partida
+            data: jogador2.get()
         }));
 
-        partidas.push(partida);
+        partidas[partida.id_partida] = partida;
 
         esperando = null;
     }
-
 
     ws.on('message', data => onMessage(ws, data));
     ws.on('error', error => onError(ws, error));
@@ -54,22 +54,19 @@ function onMessage(ws, data) {
         data: 'Recebido'
     }));
 
-    if (partidas[data.partida_id] !== null) {
-        // confiar no cidadão.
-        //
+    if (partidas[json.id_partida] !== null) {
+        partidas[json.id_partida].jogador1.ws.send(JSON.stringify({
+            type: 'broadcast',
+            username: json.username,
+            message: json.message
+        }));
+
+        partidas[json.id_partida].jogador2.ws.send(JSON.stringify({
+            type: 'broadcast',
+            username: json.username,
+            message: json.message
+        }));   
     }
-
-    partidas[json.id_partida].jogador1.ws.send(JSON.stringify({
-        type: 'broadcast',
-        username: json.username,
-        message: json.message
-    }));
-
-    partidas[json.id_partida].jogador2.ws.send(JSON.stringify({
-        type: 'broadcast',
-        username: json.username,
-        message: json.message
-    }));
 }
 
 function onError(ws, err) {
@@ -78,16 +75,31 @@ function onError(ws, err) {
 
 function onClose(ws, reasonCode, description) {
     console.log(`onClose: ${reasonCode} - ${description}`);
-    const index = partidas.indexOf(ws);
-    if (index > -1) {
-        partidas.splice(index, 1);
+
+    for (let key in partidas) {
+        if (partidas[key].jogador1.ws == ws) {
+            partidas[key].jogador1.estado = ESTADO.SAIU;
+            partidas[key].ENCERRADO;
+
+            partidas[key].jogador2.ws.send(JSON.stringify({
+                type: 'encerrado',
+                data: ''
+            }));
+        }
+        else if (partidas[key].jogador2.ws == ws) {
+            partidas[key].jogador2.estado = ESTADO.SAIU;
+            partidas[key].ENCERRADO;
+
+            partidas[key].jogador1.ws.send(JSON.stringify({
+                type: 'encerrado',
+                data: ''
+            }));
+        }
     }
 
     if (reasonCode == 1001) {
         console.log("Jogador saiu!");
     }
-
-    esperando = null;
 }
  
 module.exports = (server) => {

@@ -1,10 +1,20 @@
 {
   "name": "Batalha Naval",
-  "version": "0.0.1",
-  "description": "Batalha Naval por Wadson Pontes em Pedro Garcia",
+  "version": "0.0.3",
+  "description": "Batalha Naval por Wadson Pontes e Pedro Garcia",
   "main": "index.js",
   "scripts": {
-    "start": "node -r dotenv/config index"
+    "start": "node -r dotenv/config index",
+    "build": "npm build",
+    "watch": "npm-watch"
+  },
+  "watch": {
+    "build": {
+      "patterns": [
+        "src"
+      ],
+      "extensions": "js,jsx,vue,css"
+    }
   },
   "keywords": [],
   "author": "",
