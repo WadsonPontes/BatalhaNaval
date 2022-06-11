@@ -1,13 +1,20 @@
+const uuid = require('uuid');
+const Estado = require('./model/estado.js');
+
 class Jogador {
+	id;
+	idpartida;
+	nome;
 	tabuleiro;
 	tiros;
-	nome;
+	estado;
+	oponente;
+	ws;
 
-	constructor(ws, id_partida, id_jogador, estado) {
+	constructor(ws) {
 		this.ws = ws;
-		this.id_partida = id_partida;
-		this.id_jogador = id_jogador;
-		this.estado = estado;
+		this.id = uuid.v4();
+		this.estado = Estado.INICIAL;
 		this.init();
 	}
 
@@ -28,10 +35,12 @@ class Jogador {
 
 	get() {
 		return {
-			id_partida: this.id_partida,
-			id_jogador: this.id_jogador,
+			id: this.id,
+			idpartida: this.idpartida,
+			nome: this.nome,
 			tabuleiro: this.tabuleiro,
-			tiros: this.tiros
+			tiros: this.tiros,
+			estado: this.estado
 		};
 	}
 }

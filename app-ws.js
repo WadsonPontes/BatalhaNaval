@@ -1,57 +1,44 @@
 const WebSocket = require('ws');
-const uuid = require('uuid');
-const Estado = require('./model/estado.js');
 const Partida = require('./model/partida.js');
 const Jogador = require('./model/jogador.js');
 
-let saguao = {};
+let jogadores = {};
 let partidas = {};
 
 function novaConexao(ws, req) {
     let jogador = new Jogador(ws);
 
+    ws.on('message', dados => novaMensagem(jogador, dados));
+    ws.on('error', erro => erro(jogador, erro));
+    ws.on('close', (id, descricao) => conexaoFechada(jogador, id, descricao));
 
-    if (!esperando) {
-        let id_jogador1 = uuid.v4();
-        esperando = new Jogador(ws, null, id_jogador1, Estado.JOGANDO);
+    jogadores[jogador.id] = jogador;
 
-        ws.send(JSON.stringify({
-            type: 'connection',
-            data: 'espere'
-        }));
-    }
-    else {
-        let id_partida = uuid.v4();
-        let id_jogador2 = uuid.v4();
-        let jogador2 = new Jogador(ws, id_partida, id_jogador2, Estado.JOGANDO);
-        let partida = new Partida(id_partida, esperando, jogador2, Estado.POSICIONAMENTO);
-        partida.jogador1.id_partida = id_partida;
+    // else {
+    //     let id_partida = uuid.v4();
+    //     let id_jogador2 = uuid.v4();
+    //     let jogador2 = new Jogador(ws, id_partida, id_jogador2, Estado.JOGANDO);
+    //     let partida = new Partida(id_partida, esperando, jogador2, Estado.POSICIONAMENTO);
+    //     partida.jogador1.id_partida = id_partida;
 
-        esperando.ws.send(JSON.stringify({
-            type: 'start',
-            jogador: esperando.get()
-        }));
+    //     esperando.ws.send(JSON.stringify({
+    //         type: 'start',
+    //         jogador: esperando.get()
+    //     }));
 
-        jogador2.ws.send(JSON.stringify({
-            type: 'start',
-            jogador: jogador2.get()
-        }));
+    //     jogador2.ws.send(JSON.stringify({
+    //         type: 'start',
+    //         jogador: jogador2.get()
+    //     }));
 
-        partidas[id_partida] = partida;
+    //     partidas[id_partida] = partida;
 
-        esperando = null;
-    }
-
-    ws.on('message', data => onMessage(ws, data));
-    ws.on('error', error => onError(ws, error));
-    ws.on('close', (reasonCode, description) => onClose(ws, reasonCode, description));
-
-    console.log(`Jogador conectou!`);
+    //     esperando = null;
+    // }
 }
  
-function onMessage(ws, data) {
-    console.log(`onMessage: ${data}`);
-    const json = JSON.parse(data);
+function novaMensagem(jogador, dados) {
+    const json = JSON.parse(dados);
     ws.send(JSON.stringify({
         type: 'confirmation',
         data: 'Recebido'
@@ -72,36 +59,18 @@ function onMessage(ws, data) {
     }
 }
 
-function onError(ws, err) {
-    console.error(`onError: ${err.message}`);
+function erro(jogador, erro) {
+    console.error(`[${jogador.nome}] Erro: ${erro.message}`);
 }
 
-function onClose(ws, reasonCode, description) {
-    console.log(`onClose: ${reasonCode} - ${description}`);
+function conexaoFechada(jogador, id, descricao) {
+    console.log(`[${jogador.nome}] Conexão Fechada: ${id} - ${descricao}`);
 
-    for (let key in partidas) {
-        if (partidas[key].jogador1.ws == ws) {
-            partidas[key].jogador1.estado = Estado.SAIU;
-            partidas[key].ENCERRADO;
-
-            partidas[key].jogador2.ws.send(JSON.stringify({
-                type: 'encerrado',
-                data: ''
-            }));
-        }
-        else if (partidas[key].jogador2.ws == ws) {
-            partidas[key].jogador2.estado = Estado.SAIU;
-            partidas[key].ENCERRADO;
-
-            partidas[key].jogador1.ws.send(JSON.stringify({
-                type: 'encerrado',
-                data: ''
-            }));
-        }
+    if (id == 1001) {
+        jogadores[jogador.id].estado = Estado.DESISTENTE;
     }
-
-    if (reasonCode == 1001) {
-        console.log("Jogador saiu!");
+    else {
+        jogadores[jogador.id].estado = Estado.DESCONECTADO;
     }
 }
  

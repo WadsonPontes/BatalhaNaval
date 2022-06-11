@@ -1,3 +1,6 @@
+const uuid = require('uuid');
+const Estado = require('./model/estado.js');
+
 class Partida {
   constructor(id_partida, jogador1, jogador2, estado) {
     this.id_partida = id_partida;
