@@ -1,5 +1,5 @@
 const uuid = require('uuid');
-const Estado = require('./model/estado.js');
+const Estado = require('./estado.js');
 
 class Jogador {
 	id;

@@ -1,74 +1,50 @@
 const ws = new WebSocket("ws://" + location.host);
-let e = {}; // Elementos
-// let jogador;
+let e = {};
+let tela = 'tela_inicial';
+let jogador;
 
-// ws.onmessage = (event) => {
-//     const dados = JSON.parse(event.data);
+ws.onmessage = (evento) => {
+    const dados = JSON.parse(evento.data);
 
-//     if (dados.type == 'connection') {
-//         msg_espera.innerHTML = "Esperando oponente!";
-//     }
-//     else if (dados.type == 'start') {
-//         msg_espera.innerHTML = "";
-//         jogador = dados.jogador;
-//     }
-//     else if (dados.type == 'broadcast') {
-//         // cria a mensagem na tela.
-//         const divMensagemLinha = document.createElement("DIV");
-//         const divMensagemNomePessoa = document.createElement("DIV");
-//         const divMensagemConteudo = document.createElement("DIV");
-        
-//         divMensagemNomePessoa.className = "nome-pessoa";
-        
-//         if (dados.username == username.value) {
-//             divMensagemLinha.className = "mensagem-usuario";
-//             divMensagemNomePessoa.innerHTML = "Você: ";
-//         } else {
-//             divMensagemLinha.className = "mensagem-outro";
-//             divMensagemNomePessoa.innerHTML = `${dados.username}: `;
-//         } 
+    switch (dados.tipo) {
+        case 'conexao':
+            jogador = dados.jogador;
+            break;
+        case 'entrar':
+            jogador = dados.jogador;
+            mudarPara('tela_saguao');
+            break;
+        case 'saguao':
+            atualizarSaguao(dados);
+            break;
+        default:
+            break;
+    }
+}
 
-//         divMensagemConteudo.innerHTML = dados.message;
+ws.onerror = (erro) => {
+    console.log(`Erro na conexão: ${erro}`);
+}
 
-//         divMensagemLinha.appendChild(divMensagemNomePessoa);
-//         divMensagemLinha.appendChild(divMensagemConteudo);
-        
-//         chat.appendChild(divMensagemLinha);        
-//     }
-//     else if (json.type == 'encerrado') {
-//         msg_espera.innerHTML = "Partida Encerrada, adversário saiu!";
-//     }
-// }
+ws.onclose = (id, descricao) => {
+    console.log(`Conexão fechada: ${id} - ${descricao}`);
+}
 
-// function send() {
-//     if (username.value == "") {
-//         alert("Por favor, digite um nome de usuário!");
-//         username.focus();
-//         return;
-//     }
+function atualizarSaguao(dados) {
+    e.lista_saguao.textContent = '';
 
-//     if (msg.value == "") {
-//         alert("Por favor, digite uma mensagem!");
-//         msg.focus();
-//         return;
-//     }
+    dados.jogadores.forEach((j) => {
+        const li = document.createElement('li');
+        li.textContent = j;
+        e.lista_saguao.appendChild(li); 
+    });
+}
 
-//     ws.send(JSON.stringify({
-//         type: 'message', 
-//         username: username.value,
-//         message: msg.value,
-//         id_partida: id_partida
-//     }));
-
-//     msg.value = '';
-//     msg.focus();
-// }
-
-// function pressionouTecla(event) {
-//     if (event.keyCode == 13) {
-//         send();
-//     }
-// }
+function carregarSaguao() {
+    ws.send(JSON.stringify({
+        tipo: 'saguao'
+    }));
+}
 
 function entrar() {
     if (e.campo_nome.value == "") {
@@ -83,6 +59,20 @@ function entrar() {
     }));
 }
 
+function mudarPara(nova) {
+    e[nova].classList.remove('desligado');
+    e[tela].classList.add('desligado');
+    tela = nova;
+
+    switch (tela) {
+        case 'tela_saguao':
+            carregarSaguao();
+            break;
+        default:
+            break;
+    }
+}
+
 function main() {
     e.tela_inicial = document.querySelector('#tela-inicial');
     e.tela_saguao = document.querySelector('#tela-saguao');
@@ -91,6 +81,7 @@ function main() {
     e.tela_resultado = document.querySelector('#tela-resultado');
 
     e.campo_nome = document.querySelector('#campo-nome');
+    e.lista_saguao = document.querySelector('#lista-saguao');
 }
 
 main();

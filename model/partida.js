@@ -1,5 +1,5 @@
 const uuid = require('uuid');
-const Estado = require('./model/estado.js');
+const Estado = require('./estado.js');
 
 class Partida {
   constructor(id_partida, jogador1, jogador2, estado) {
