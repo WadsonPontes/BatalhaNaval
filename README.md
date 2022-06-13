@@ -1,17 +1,17 @@
-# Exemplo de simples chat com websocket.
+# Jogo de Batalha Naval.
 
 ## Para rodar na sua máquina
-* Necessário ter o git e nodejs com o npm instalados
+* Necessário ter o git e NodeJS com o npm instalados
 * Para baixar o repositório:
 ``` bash
-git clone https://github.com/isaacfranco/jrm_websocket001.git
-cd jrm_websocket001
+git clone https://github.com/WadsonPontes/BatalhaNaval.git
+cd BatalhaNaval
 npm install
 ```
 * Para rodar a aplicação
 ```bash
 npm start
 ```
-# Abra no navegador (em mais de um para testar o chat)
+# Abra no navegador
 URL: http://localhost:3000/
 

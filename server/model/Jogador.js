@@ -1,14 +1,17 @@
 const uuid = require('uuid');
-const Estado = require('./estado.js');
+const Estado = require('../enum/EstadoEnum.js');
+const Cargo = require('../enum/CargoEnum.js');
 
 class Jogador {
 	id;
+	idsala;
 	idpartida;
+	p;
 	nome;
 	tabuleiro;
 	tiros;
+	cargo;
 	estado;
-	oponente;
 	ws;
 
 	constructor(ws) {
@@ -35,11 +38,10 @@ class Jogador {
 
 	get() {
 		return {
-			id: this.id,
-			idpartida: this.idpartida,
 			nome: this.nome,
 			tabuleiro: this.tabuleiro,
 			tiros: this.tiros,
+			cargo: this.cargo,
 			estado: this.estado
 		};
 	}
