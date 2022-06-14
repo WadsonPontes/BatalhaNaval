@@ -53,10 +53,6 @@ menu{
     text-align: center;
 }
 
-ul{
-    display: inline-block;
-}
-
 h1{
     font-size: 30px;
     position: fixed;
@@ -130,14 +126,29 @@ dialog .erro{
     color: #16437C;
 }
 
+ul{
+    width: 350px;
+    height: 350px;
+    display: block;
+    border-radius: 10px;
+    background-color: white;
+    overflow-y: scroll;
+    margin: auto;
+    overflow-x: hidden;
+}
+
 li{
     display: block;
-    background-color: #4D96FC;
     margin: 1px;
     cursor: pointer;
     width: 338px;
+    color: black;
+    padding: 5px 10px;
+}
+
+li:hover{
     color: white;
-    padding: 10px;
+    background-color: #4D96FC;
 }
 
 td{
