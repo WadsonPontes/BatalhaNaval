@@ -133,52 +133,150 @@ module.exports = {
 	validarPreparacao: (GM, jogador, dados) => {
 		let i = dados.i;
 		let j = dados.j;
+		let tabuleiro = jogador.tabuleiro;
 		let res = {
 			valido: true,
 			mensagem: null
 		};
 
 		switch (jogador.esquadra) {
-			case 2:
+			case 1:
 				res.mensagem = 'Escolha uma posição para seu primeiro encouraçado';
 				break;
-			case 3:
+			case 2:
 				res.mensagem = 'Escolha uma posição para seu segundo encouraçado';
 				break;
-			case 4:
+			case 3:
 				res.mensagem = 'Escolha uma posição para seu primeiro hidroavião';
 				break;
-			case 5:
+			case 4:
 				res.mensagem = 'Escolha uma posição para seu segundo hidroavião';
 				break;
-			case 6:
+			case 5:
 				res.mensagem = 'Escolha uma posição para seu terceiro hidroavião';
 				break;
-			case 7:
+			case 6:
 				res.mensagem = 'Escolha uma posição para seu primeiro submarino';
 				break;
-			case 8:
+			case 7:
 				res.mensagem = 'Escolha uma posição para seu segundo submarino';
 				break;
-			case 9:
+			case 8:
 				res.mensagem = 'Escolha uma posição para seu terceiro submarino';
 				break;
-			case 10:
+			case 9:
 				res.mensagem = 'Escolha uma posição para seu quarto submarino';
 				break;
-			case 11:
+			case 10:
 				res.mensagem = 'Escolha uma posição para seu primeiro cruzador';
 				break;
-			case 12:
+			case 11:
 				res.mensagem = 'Escolha uma posição para seu segundo cruzador';
 				break;
-			case 13:
+			case 12:
 				res.mensagem = 'Escolha uma posição para seu terceiro cruzador';
+				break;
+			default:
+				res.mensagem = 'Clique em PRONTO para começar';
+				break;
+		}
+
+		switch (jogador.esquadra) {
+			case 1:
+				for (let k = 0; k < 5; ++k) {
+					if (!GM.Util.validarCasa(tabuleiro, i, j+k)) {
+						res.valido = false;
+						res.mensagem = 'Movimento invalido';
+					}
+				}
+				break;
+			case 2:
+			case 3:
+				for (let k = 0; k < 4; ++k) {
+					if (!GM.Util.validarCasa(tabuleiro, i, j+k)) {
+						res.valido = false;
+						res.mensagem = 'Movimento invalido';
+					}
+				}
+				break;
+			case 4:
+			case 5:
+			case 6:
+				if (!GM.Util.validarCasa(tabuleiro, i, j)) {
+					res.valido = false;
+					res.mensagem = 'Movimento invalido';
+				}
+				else if (!GM.Util.validarCasa(tabuleiro, i+1, j+1)) {
+					res.valido = false;
+					res.mensagem = 'Movimento invalido';
+				}
+				else if (!GM.Util.validarCasa(tabuleiro, i+1, j-1)) {
+					res.valido = false;
+					res.mensagem = 'Movimento invalido';
+				}
+				break;
+			case 7:
+			case 8:
+			case 9:
+			case 10:
+				if (!GM.Util.validarCasa(tabuleiro, i, j)) {
+					res.valido = false;
+					res.mensagem = 'Movimento invalido';
+				}
+				break;
+			case 11:
+			case 12:
+			case 13:
+				if (!GM.Util.validarCasa(tabuleiro, i, j)) {
+					res.valido = false;
+					res.mensagem = 'Movimento invalido';
+				}
+				else if (!GM.Util.validarCasa(tabuleiro, i, j+1)) {
+					res.valido = false;
+					res.mensagem = 'Movimento invalido';
+				}
 				break;
 			default:
 				break;
 		}
 
 		return res;
+	},
+
+	validarCasa(tabuleiro, i, j) {
+		let valido = true;
+		let t = tabuleiro.length-1;
+
+		if (i < 0 || i > t || j < 0 || j > t || tabuleiro[i][j] > 0) {
+			valido = false;
+		}
+
+		else if (i-1 >= 0 && i-1 <= t && tabuleiro[i-1][j] > 0) {
+			valido = false;
+		}
+		else if (j+1 >= 0 && j+1 <= t && tabuleiro[i][j+1] > 0) {
+			valido = false;
+		}
+		else if (i+1 >= 0 && i+1 <= t && tabuleiro[i+1][j] > 0) {
+			valido = false;
+		}
+		else if (j-1 >= 0 && j-1 <= t && tabuleiro[i][j-1] > 0) {
+			valido = false;
+		}
+
+		else if (i-1 >= 0 && i-1 <= t && j-1 >=0 && j-1 <= t && tabuleiro[i-1][j-1] > 0) {
+			valido = false;
+		}
+		else if (j+1 >= 0 && j+1 <= t && i-1 >= 0 && i-1 <= t && tabuleiro[i-1][j+1] > 0) {
+			valido = false;
+		}
+		else if (i+1 >= 0 && i+1 <= t && j+1 >= 0 && j+1 <= t && tabuleiro[i+1][j+1] > 0) {
+			valido = false;
+		}
+		else if (j-1 >= 0 && j-1 <= t && i+1 >= 0 && i+1 <= t && tabuleiro[i+1][j-1] > 0) {
+			valido = false;
+		}
+
+		return valido;
 	}
 }

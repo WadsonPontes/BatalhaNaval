@@ -14,6 +14,7 @@ class Jogador {
 	cargo;
 	estado;
 	ws;
+	dimensao = 15;
 
 	constructor(ws) {
 		this.ws = ws;
@@ -27,11 +28,11 @@ class Jogador {
 		this.tabuleiro = [];
 		this.tiros = [];
 
-		for (let i = 0; i < 10; ++i) {
+		for (let i = 0; i < this.dimensao; ++i) {
 			this.tabuleiro[i] = [];
 			this.tiros[i] = [];
 
-			for (let j = 0; j < 10; ++j) {
+			for (let j = 0; j < this.dimensao; ++j) {
 				this.tabuleiro[i][j] = 0;
 				this.tiros[i][j] = 0;
 			}
@@ -43,6 +44,7 @@ class Jogador {
 			nome: this.nome,
 			tabuleiro: this.tabuleiro,
 			tiros: this.tiros,
+			esquadra: this.esquadra,
 			cargo: this.cargo,
 			estado: this.estado
 		};

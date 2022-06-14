@@ -184,6 +184,7 @@ function verificarPreparacao(dados) {
 function listarPreparacao(mensagem) {
     let tabuleiro = jogador.tabuleiro;
     e.tabuleiro_preparacao.textContent = '';
+    e.erro_preparacao.textContent = '';
     e.comando_preparacao.textContent = mensagem;
 
     for (let i = 0; i < tabuleiro.length; ++i) {
@@ -197,6 +198,15 @@ function listarPreparacao(mensagem) {
             tr.appendChild(td);
         }
     }
+
+    if (jogador.esquadra > 13) {
+        e.botao_pronto.classList.remove('invisivel');
+        e.botao_pronto.disabled = false;
+    }
+}
+
+function pronto() {
+    e.botao_pronto.disabled = true;
 }
 
 function posicionarEsquadra(i, j) {
@@ -381,6 +391,8 @@ function main() {
 
     e.tabuleiro_preparacao = document.querySelector('#tabuleiro-preparacao');
     e.comando_preparacao = document.querySelector('#comando-preparacao');
+
+    e.botao_pronto = document.querySelector('#botao-pronto');
 }
 
 main();

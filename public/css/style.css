@@ -71,7 +71,7 @@ button{
     width: 150px;
     background-color: #C8158D;
     color: white;
-    margin: 25px;
+    margin: 0 25px 25px 25px;
     cursor: pointer;
 }
 
@@ -126,6 +126,11 @@ dialog .erro{
     color: #16437C;
 }
 
+footer p{
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
 ul{
     width: 350px;
     height: 350px;
@@ -152,13 +157,16 @@ li:hover{
 }
 
 td{
-    width: 50px;
-    height: 50px;
+    width: 32px;
+    height: 32px;
     cursor: pointer;
 }
 
 .erro{
+    display: block;
+    height: 25px;
     color: #C8158D;
+    line-height: 1;
 }
 
 .cor-0{
@@ -189,7 +197,6 @@ td{
 	display: none;
 }
 
-footer p{
-    font-size: 15px;
-    margin-bottom: 5px;
+.invisivel{
+    visibility: hidden;
 }
