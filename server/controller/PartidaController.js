@@ -6,7 +6,13 @@ const Jogador = require('../model/Jogador.js');
 
 module.exports = {
 	main: (GM, ws, dados, jogador) => {
-		
+		switch (dados.funcao) {
+			case 'listar':
+				GM.PreparacaoController.listar(GM, ws, dados, jogador);
+				break;
+			default:
+				break;
+		}
 	},
 
 	jogar: (GM, ws, dados, jogador) => {
@@ -28,6 +34,35 @@ module.exports = {
 		else {
 			ws.send(JSON.stringify({
 				tipo: 'jogar',
+				estado: 'erro',
+				mensagem: res.mensagem
+			}));
+		}
+	},
+
+	listar: (GM, ws, dados, jogador) => {
+		// let res = GM.Util.validarPrePreparacao(GM, jogador);
+		let partida = GM.partidas[jogador.idpartida];
+		let res = {
+			valido: true,
+			mensagem: ''
+		}
+
+		if (res.valido) {
+			for (jog of partida.jogadores) {
+		        jog.ws.send(JSON.stringify({
+		            tipo: 'partida',
+		            funcao: 'listar',
+		            estado: 'sucesso',
+		            mensagem: res.mensagem,
+		            jogador: jog.get()
+		        }));
+		    }
+		}
+		else {
+			ws.send(JSON.stringify({
+				tipo: 'partida',
+				funcao: 'listar',
 				estado: 'erro',
 				mensagem: res.mensagem
 			}));

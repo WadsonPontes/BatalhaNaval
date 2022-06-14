@@ -54,6 +54,9 @@ module.exports = {
 	        case 'preparacao':
 	            PreparacaoController.main(GM, ws, dados, jogador);
 	            break;
+	        case 'partida':
+	            PartidaController.main(GM, ws, dados, jogador);
+	            break;
 	        default:
 	            break;
 	    }

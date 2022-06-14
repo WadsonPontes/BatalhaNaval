@@ -26,6 +26,9 @@ ws.onmessage = (evento) => {
         case 'preparacao':
             mainPreparacao(dados);
             break;
+        case 'partida':
+            mainPartida(dados);
+            break;
         default:
             break;
     }
@@ -65,6 +68,22 @@ function mainPreparacao(dados) {
     switch (dados.funcao) {
         case 'listar':
             verificarPreparacao(dados);
+            break;
+        case 'pronto':
+            verificarPronto(dados);
+            break;
+        case 'finalizar':
+            verificarFinalizarPreparacao(dados);
+            break;
+        default:
+            break;
+    }
+}
+
+function mainPartida(dados) {
+    switch (dados.funcao) {
+        case 'listar':
+            verificarJogo(dados);
             break;
         default:
             break;
@@ -171,6 +190,13 @@ function carregarPreparacao() {
     }));
 }
 
+function carregarJogo() {
+    ws.send(JSON.stringify({
+        tipo: 'partida',
+        funcao: 'listar'
+    }));
+}
+
 function verificarPreparacao(dados) {
     if (dados.estado == 'erro') {
         e.erro_preparacao.textContent = dados.mensagem;
@@ -179,6 +205,71 @@ function verificarPreparacao(dados) {
         jogador = dados.jogador;
         listarPreparacao(dados.mensagem);
     }
+}
+
+function verificarJogo(dados) {
+    if (dados.estado == 'erro') {
+        e.erro_jogo.textContent = dados.mensagem;
+    }
+    else {
+        jogador = dados.jogador;
+        listarJogo(dados.mensagem);
+    }
+}
+
+function verificarFinalizarPreparacao(dados) {
+    if (dados.estado == 'erro') {
+        
+    }
+    else {
+        mudarPara('tela_jogo');
+    }
+}
+
+function verificarPronto(dados) {
+    jogador = dados.jogador;
+    e.comando_preparacao.textContent = dados.mensagem;
+
+    ws.send(JSON.stringify({
+        tipo: 'preparacao',
+        funcao: 'finalizar'
+    }));
+}
+
+function listarJogo(mensagem) {
+    let tabuleiro = jogador.tabuleiro;
+    let tiros = jogador.tiros;
+    e.tabuleiro_jogo.textContent = '';
+    e.tiros_jogo.textContent = '';
+    e.erro_jogo.textContent = '';
+    e.comando_jogo.textContent = mensagem;
+
+    for (let i = 0; i < tabuleiro.length; ++i) {
+        const tr = document.createElement('tr');
+        e.tabuleiro_jogo.appendChild(tr);
+
+        for (let j = 0; j < tabuleiro[i].length; ++j) {
+            const td = document.createElement('td');
+            td.classList.add(`cor-${tabuleiro[i][j]}`);
+            tr.appendChild(td);
+        }
+    }
+
+    for (let i = 0; i < tiros.length; ++i) {
+        const tr = document.createElement('tr');
+        e.tiros_jogo.appendChild(tr);
+
+        for (let j = 0; j < tiros[i].length; ++j) {
+            const td = document.createElement('td');
+            td.classList.add(`cor-${tiros[i][j]}`);
+            td.onclick = () => atacar(i, j);
+            tr.appendChild(td);
+        }
+    }
+}
+
+function atacar(i, j) {
+    
 }
 
 function listarPreparacao(mensagem) {
@@ -207,6 +298,11 @@ function listarPreparacao(mensagem) {
 
 function pronto() {
     e.botao_pronto.disabled = true;
+
+    ws.send(JSON.stringify({
+        tipo: 'preparacao',
+        funcao: 'pronto'
+    }));
 }
 
 function posicionarEsquadra(i, j) {
@@ -346,6 +442,9 @@ function mudarPara(nova) {
         case 'tela_preparacao':
             carregarPreparacao();
             break;
+        case 'tela_jogo':
+            carregarJogo();
+            break;
         default:
             break;
     }
@@ -388,11 +487,16 @@ function main() {
     e.erro_saguao = document.querySelector('#erro-saguao');
     e.erro_sala = document.querySelector('#erro-sala');
     e.erro_preparacao = document.querySelector('#erro-preparacao');
+    e.erro_jogo = document.querySelector('#erro-jogo');
 
     e.tabuleiro_preparacao = document.querySelector('#tabuleiro-preparacao');
     e.comando_preparacao = document.querySelector('#comando-preparacao');
 
     e.botao_pronto = document.querySelector('#botao-pronto');
+
+    e.tabuleiro_jogo = document.querySelector('#tabuleiro-jogo');
+    e.tiros_jogo = document.querySelector('#tiros-jogo');
+    e.comando_jogo = document.querySelector('#comando-jogo');
 }
 
 main();
