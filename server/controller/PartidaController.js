@@ -49,7 +49,7 @@ module.exports = {
 		}
 
 		if (res.valido) {
-			for (jog of partida.jogadores) {
+			for (let jog of partida.jogadores) {
 		        jog.ws.send(JSON.stringify({
 		            tipo: 'partida',
 		            funcao: 'listar',
