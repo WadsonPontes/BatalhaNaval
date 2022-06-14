@@ -1,6 +1,6 @@
 {
     "name": "Batalha Naval",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Jogo de batalha naval desenvolvido por Wadson Pontes e Pedro Garcia",
     "main": "index.js",
     "scripts": {

@@ -94,5 +94,91 @@ module.exports = {
 		}
 
 		return res;
+	},
+
+	validarJogar: (GM, jogador) => {
+		let sala = GM.salas[jogador.idsala];
+		let res = {
+			valido: true,
+			mensagem: null
+		};
+
+		if (jogador.cargo != Cargo.ADMINISTRADOR) {
+			res.valido = false;
+			res.mensagem = 'Peça para um administrador começar a partida';
+		}
+		else if (sala.jogadores < 2) {
+			res.valido = false;
+			res.mensagem = 'Número de jogadores insuficiente para começar uma partida';
+		}
+		else if (sala.jogadores > 2) {
+			res.valido = false;
+			res.mensagem = 'Número de jogadores acima do permitido';
+		}
+
+		return res;
+	},
+
+	validarPrePreparacao: (GM, jogador) => {
+		let res = {
+			valido: true,
+			mensagem: null
+		};
+
+		res.mensagem = 'Escolha uma posição para seu porta-aviões';
+
+		return res;
+	},
+
+	validarPreparacao: (GM, jogador, dados) => {
+		let i = dados.i;
+		let j = dados.j;
+		let res = {
+			valido: true,
+			mensagem: null
+		};
+
+		switch (jogador.esquadra) {
+			case 2:
+				res.mensagem = 'Escolha uma posição para seu primeiro encouraçado';
+				break;
+			case 3:
+				res.mensagem = 'Escolha uma posição para seu segundo encouraçado';
+				break;
+			case 4:
+				res.mensagem = 'Escolha uma posição para seu primeiro hidroavião';
+				break;
+			case 5:
+				res.mensagem = 'Escolha uma posição para seu segundo hidroavião';
+				break;
+			case 6:
+				res.mensagem = 'Escolha uma posição para seu terceiro hidroavião';
+				break;
+			case 7:
+				res.mensagem = 'Escolha uma posição para seu primeiro submarino';
+				break;
+			case 8:
+				res.mensagem = 'Escolha uma posição para seu segundo submarino';
+				break;
+			case 9:
+				res.mensagem = 'Escolha uma posição para seu terceiro submarino';
+				break;
+			case 10:
+				res.mensagem = 'Escolha uma posição para seu quarto submarino';
+				break;
+			case 11:
+				res.mensagem = 'Escolha uma posição para seu primeiro cruzador';
+				break;
+			case 12:
+				res.mensagem = 'Escolha uma posição para seu segundo cruzador';
+				break;
+			case 13:
+				res.mensagem = 'Escolha uma posição para seu terceiro cruzador';
+				break;
+			default:
+				break;
+		}
+
+		return res;
 	}
 }

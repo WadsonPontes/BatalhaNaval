@@ -3,14 +3,15 @@ const Estado = Object.freeze({
     SAGUAO: 2,
     SALA: 3,
     PREPARACAO: 4,
-    JOGO: 5,
-    RESULTADO: 6,
-    ATACANDO: 7,
-    DEFENDENDO: 8,
-    DESCONECTADO: 9,
-    DESISTENTE: 10,
-    DERROTADO: 11,
-    VENCEDOR: 12
+    PRONTO: 5,
+    JOGO: 6,
+    RESULTADO: 7,
+    ATACANDO: 8,
+    DEFENDENDO: 9,
+    DESCONECTADO: 10,
+    DESISTENTE: 11,
+    DERROTADO: 12,
+    VENCEDOR: 13
 });
 
 module.exports = Estado;

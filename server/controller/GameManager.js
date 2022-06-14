@@ -6,6 +6,8 @@ const Jogador = require('../model/Jogador.js');
 const Util = require('./Util.js');
 const SaguaoController = require('./SaguaoController.js');
 const SalaController = require('./SalaController.js');
+const PreparacaoController = require('./PreparacaoController.js');
+const PartidaController = require('./PartidaController.js');
 
 module.exports = {
 	jogadores: {},
@@ -14,6 +16,8 @@ module.exports = {
 	Util: Util,
 	SaguaoController: SaguaoController,
 	SalaController: SalaController,
+	PreparacaoController: PreparacaoController,
+	PartidaController: PartidaController,
 
 	novaConexao: (GM, ws, req) => {
 	    let jogador = new Jogador(ws);
@@ -44,6 +48,12 @@ module.exports = {
 	        case 'sala':
 	            SalaController.main(GM, ws, dados, jogador);
 	            break;
+	        case 'jogar':
+	            PartidaController.jogar(GM, ws, dados, jogador);
+	            break;
+	        case 'preparacao':
+	            PreparacaoController.main(GM, ws, dados, jogador);
+	            break;
 	        default:
 	            break;
 	    }
@@ -54,14 +64,13 @@ module.exports = {
 
 	    switch (jogador.estado) {
 	        case Estado.SALA:
-	        let sala = GM.salas[jogador.idsala];
-	        	sala.delUsuario(jogador, Estado.DESCONECTADO);
-	            SalaController.listar(GM, sala);
+	            SalaController.sairOuDel(GM, jogador.ws, jogador);
 	            break;
 	        default:
 	            break;
 	    }
 
+	    jogador.estado = Estado.DESCONECTADO;
 	    delete GM.jogadores[jogador.id];
 	},
 
@@ -79,14 +88,13 @@ module.exports = {
 
 	    switch (jogador.estado) {
 	        case Estado.SALA:
-	        let sala = GM.salas[jogador.idsala];
-	        	sala.delUsuario(jogador, estado);
-	            SalaController.listar(GM, sala);
+	        	SalaController.sairOuDel(GM, jogador.ws, jogador);
 	            break;
 	        default:
 	            break;
 	    }
 
+	    jogador.estado = estado;
 	    delete GM.jogadores[jogador.id];
 	}
 }

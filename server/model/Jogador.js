@@ -10,6 +10,7 @@ class Jogador {
 	nome;
 	tabuleiro;
 	tiros;
+	esquadra;
 	cargo;
 	estado;
 	ws;
@@ -17,6 +18,7 @@ class Jogador {
 	constructor(ws) {
 		this.ws = ws;
 		this.id = uuid.v4();
+		this.esquadra = 1;
 		this.estado = Estado.INICIAL;
 		this.init();
 	}
@@ -44,6 +46,48 @@ class Jogador {
 			cargo: this.cargo,
 			estado: this.estado
 		};
+	}
+
+	addEsquedra(dados) {
+		let i = dados.i;
+		let j = dados.j;
+
+		switch (this.esquadra) {
+			case 1:
+				for (let k = 0; k < 5; ++k) {
+					this.tabuleiro[i][j+k] = this.esquadra;
+				}
+				break;
+			case 2:
+			case 3:
+				for (let k = 0; k < 4; ++k) {
+					this.tabuleiro[i][j+k] = this.esquadra;
+				}
+				break;
+			case 4:
+			case 5:
+			case 6:
+				this.tabuleiro[i][j] = this.esquadra;
+				this.tabuleiro[i+1][j+1] = this.esquadra;
+				this.tabuleiro[i+1][j-1] = this.esquadra;
+				break;
+			case 7:
+			case 8:
+			case 9:
+			case 10:
+				this.tabuleiro[i][j] = this.esquadra;
+				break;
+			case 11:
+			case 12:
+			case 13:
+				this.tabuleiro[i][j] = this.esquadra;
+				this.tabuleiro[i][j+1] = this.esquadra;
+				break;
+			default:
+				break;
+		}
+
+		++this.esquadra;
 	}
 }
 

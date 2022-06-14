@@ -17,10 +17,10 @@ module.exports = {
 				GM.SalaController.entrar(GM, ws, dados, jogador);
 				break;
 			case 'sair':
-				GM.SalaController.sair(GM, ws, dados, jogador);
+				GM.SalaController.sair(GM, ws, jogador);
 				break;
 			case 'deletar':
-				GM.SalaController.deletar(GM, ws, dados, jogador);
+				GM.SalaController.deletar(GM, ws, jogador);
 				break;
 			default:
 				break;
@@ -76,11 +76,11 @@ module.exports = {
 		}
 	},
 
-	sair: (GM, ws, dados, jogador) => {
+	sair: (GM, ws, jogador) => {
 		let res = GM.Util.validarSairDeSala(GM, jogador);
 
 		if (res.valido) {
-	    	let sala = GM.salas[jogador.idsala];
+			let sala = GM.salas[jogador.idsala];
 
 			sala.delUsuario(jogador);
 
@@ -103,7 +103,7 @@ module.exports = {
 		}
 	},
 
-	deletar: (GM, ws, dados, jogador) => {
+	deletar: (GM, ws, jogador) => {
 		let res = GM.Util.validarDeletarSala(GM, jogador);
 
 		if (res.valido) {
@@ -131,6 +131,18 @@ module.exports = {
 				estado: 'erro',
 				mensagem: res.mensagem
 			}));
+		}
+	},
+
+	sairOuDel: (GM, ws, jogador) => {
+		let resDel = GM.Util.validarDeletarSala(GM, jogador);
+		let resSai = GM.Util.validarSairDeSala(GM, jogador);
+
+		if (resDel.valido) {
+			GM.SalaController.deletar(GM, ws, jogador);
+		}
+		else {
+			GM.SalaController.sair(GM, ws, jogador);
 		}
 	},
 

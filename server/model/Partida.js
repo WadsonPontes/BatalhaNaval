@@ -9,12 +9,23 @@ class Partida {
     vez;
     estado;
 
-    constructor(idsala, ...jogadores) {
+    constructor(sala) {
         this.id = uuid.v4();
-        this.idsala = idsala;
-        this.jogadores = jogadores;
-        this.vez = 1;
+        this.idsala = sala.id;
+        this.jogadores = sala.jogadores;
+        this.vez = 0;
         this.estado = Estado.PREPARACAO;
+        this.init(sala);
+    }
+
+    init(sala) {
+        sala.estado = Estado.JOGO;
+        sala.idpartida = this.id;
+
+        for (let jogador of sala.jogadores) {
+            jogador.idpartida = this.id;
+            jogador.estado = Estado.PREPARACAO;
+        }
     }
 }
 

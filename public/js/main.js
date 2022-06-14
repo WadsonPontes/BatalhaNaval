@@ -20,6 +20,12 @@ ws.onmessage = (evento) => {
         case 'sala':
             mainSala(dados);
             break;
+        case 'jogar':
+            verificarJogar(dados);
+            break;
+        case 'preparacao':
+            mainPreparacao(dados);
+            break;
         default:
             break;
     }
@@ -49,6 +55,16 @@ function mainSala(dados) {
             break;
         case 'deletar':
             verificarDeletarSala(dados);
+            break;
+        default:
+            break;
+    }
+}
+
+function mainPreparacao(dados) {
+    switch (dados.funcao) {
+        case 'listar':
+            verificarPreparacao(dados);
             break;
         default:
             break;
@@ -148,6 +164,50 @@ function carregarSaguao() {
     }));
 }
 
+function carregarPreparacao() {
+    ws.send(JSON.stringify({
+        tipo: 'preparacao',
+        funcao: 'listar'
+    }));
+}
+
+function verificarPreparacao(dados) {
+    if (dados.estado == 'erro') {
+        e.erro_preparacao.textContent = dados.mensagem;
+    }
+    else {
+        jogador = dados.jogador;
+        listarPreparacao(dados.mensagem);
+    }
+}
+
+function listarPreparacao(mensagem) {
+    let tabuleiro = jogador.tabuleiro;
+    e.tabuleiro_preparacao.textContent = '';
+    e.comando_preparacao.textContent = mensagem;
+
+    for (let i = 0; i < tabuleiro.length; ++i) {
+        const tr = document.createElement('tr');
+        e.tabuleiro_preparacao.appendChild(tr);
+
+        for (let j = 0; j < tabuleiro[i].length; ++j) {
+            const td = document.createElement('td');
+            td.classList.add(`cor-${tabuleiro[i][j]}`);
+            td.onclick = () => posicionarEsquadra(i, j);
+            tr.appendChild(td);
+        }
+    }
+}
+
+function posicionarEsquadra(i, j) {
+    ws.send(JSON.stringify({
+        tipo: 'preparacao',
+        funcao: 'posicionar',
+        i: i,
+        j: j
+    }));
+}
+
 function verificarEntrarNoJogo(dados) {
     if (dados.estado == 'erro') {
         e.erro_nome.textContent = dados.mensagem;
@@ -165,6 +225,16 @@ function verificarCriarSala(dados) {
     else {
         jogador = dados.jogador;
         mudarPara('tela_sala');
+    }
+}
+
+function verificarJogar(dados) {
+    if (dados.estado == 'erro') {
+        e.erro_sala.textContent = dados.mensagem;
+    }
+    else {
+        jogador = dados.jogador;
+        mudarPara('tela_preparacao');
     }
 }
 
@@ -215,6 +285,12 @@ function entrarNoJogo() {
     }));
 }
 
+function jogar() {
+    ws.send(JSON.stringify({
+        tipo: 'jogar'
+    }));
+}
+
 function criarSala() {
     let nome = e.campo_nome_criar_sala.value;
     let codigo = e.campo_codigo_criar_sala.value;
@@ -257,6 +333,9 @@ function mudarPara(nova) {
         case 'tela_sala':
             carregarSala();
             break;
+        case 'tela_preparacao':
+            carregarPreparacao();
+            break;
         default:
             break;
     }
@@ -295,6 +374,13 @@ function main() {
 
     e.modal_deletar_sala = document.querySelector('#modal-deletar-sala');
     e.erro_deletar_sala = document.querySelector('#erro-deletar-sala');
+
+    e.erro_saguao = document.querySelector('#erro-saguao');
+    e.erro_sala = document.querySelector('#erro-sala');
+    e.erro_preparacao = document.querySelector('#erro-preparacao');
+
+    e.tabuleiro_preparacao = document.querySelector('#tabuleiro-preparacao');
+    e.comando_preparacao = document.querySelector('#comando-preparacao');
 }
 
 main();
